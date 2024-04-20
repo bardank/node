@@ -58,30 +58,30 @@ export class CalcService {
   }
 
   private convertToPostfix(tokens: string[]): string[] {
-    const outputQueue: string[] = [];
-    const operatorStack: string[] = [];
+    const postfixExpression: string[] = [];
+    const stack: string[] = [];
 
     for (const token of tokens) {
       if (token.match(/\d+(\.\d+)?/)) {
-        outputQueue.push(token);
+        postfixExpression.push(token);
       } else {
         while (
-          operatorStack.length &&
+          stack.length &&
           this.precedence(token) <=
-            this.precedence(operatorStack[operatorStack.length - 1])
+            this.precedence(stack[stack.length - 1])
         ) {
-          outputQueue.push(operatorStack.pop()!);
+          postfixExpression.push(stack.pop()!);
         }
-        operatorStack.push(token);
+        stack.push(token);
       }
     }
 
-    while (operatorStack.length) {
-      const topOperator = operatorStack.pop()!;
-      outputQueue.push(topOperator);
+    while (stack.length) {
+      const topOperator = stack.pop()!;
+      postfixExpression.push(topOperator);
     }
 
-    return outputQueue;
+    return postfixExpression;
   }
 
   private evaluatePostfix(postfix: string[]): number {
